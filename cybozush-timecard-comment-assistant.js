@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         才望子上海打卡
-// @namespace    https://github.com/forestsheep911/monkin-hodgepodge/blob/main/tempsss
+// @name         才望子上海打卡秘书
+// @namespace    https://github.com/forestsheep911/monkin-hodgepodge/blob/main/cybozush-timecard-comment-assistant.js
 // @version      0.1
 // @description  通过预制文本，快速备注。免除备注一次刷两个画面的烦恼。还有增量备注和清除功能。
 // @author       bxu
@@ -104,6 +104,7 @@
         appendCheckboxHead.setAttribute("id", "appendCheckbox");
         appendCheckboxHead.style.display = "inline-block";
         appendCheckboxHead.style.marginRight = "12px";
+        appendCheckboxHead.onclick = selectAppendCheckAll();
         newColHead.insertBefore(appendCheckboxHead, newColHead.firstChild);
       } else {
         const oldComment = timeCardAllRows[i].children[5].innerText;
@@ -118,7 +119,6 @@
         appendCheckboxRow.setAttribute("class", "form-check-input rowsCheckbox");
         appendCheckboxRow.style.display = "inline-block";
         appendCheckboxRow.style.marginRight = "12px";
-        appendCheckbox.onclick = selectAppendCheckAll();
         commentBtnTd.appendChild(appendCheckboxRow);
         const commentJson = JSON.parse(localStorage.pre_save_comment);
         for (let j = 0; j < commentJson.length; j += 1) {
