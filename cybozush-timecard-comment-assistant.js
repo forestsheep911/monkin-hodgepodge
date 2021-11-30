@@ -11,6 +11,7 @@
 // @icon         https://img.icons8.com/plasticine/50/000000/timer.png
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
+// @license MIT
 // ==/UserScript==
 
 /* global garoon */
