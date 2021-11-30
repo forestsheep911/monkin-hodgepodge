@@ -65,11 +65,11 @@
     };
   }
 
-  function selectAppendCheckAll() {
+  function selectAppendCheckAll(appendCheckboxHead) {
     return () => {
       const checkboxEles = document.getElementsByClassName("rowsCheckbox");
       for (let i = 0; i < checkboxEles.length; i += 1) {
-        checkboxEles[i].checked = !checkboxEles[i].checked
+        checkboxEles[i].checked = appendCheckboxHead.checked
       }
     };
   }
@@ -104,7 +104,7 @@
         appendCheckboxHead.setAttribute("id", "appendCheckbox");
         appendCheckboxHead.style.display = "inline-block";
         appendCheckboxHead.style.marginRight = "12px";
-        appendCheckboxHead.onclick = selectAppendCheckAll();
+        appendCheckboxHead.onclick = selectAppendCheckAll(appendCheckboxHead);
         newColHead.insertBefore(appendCheckboxHead, newColHead.firstChild);
       } else {
         const oldComment = timeCardAllRows[i].children[5].innerText;
