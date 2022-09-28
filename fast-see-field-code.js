@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         快速查看kintone字段代码
 // @namespace    https://github.com/forestsheep911/monkin-hodgepodge/blob/main/fast-see-field-code.js
-// @version      0.5
+// @version      0.5.1
 // @description  如果想查看字段code，以前一定要去后台管理界面，只是简单的看一个要点很多次很不友好，现在只要把鼠标放到元素题目上就可以看了。鼠标不动，单击就是拷贝code。如果有同名标题，只能显示多个code了。暂时不支持subtable。
 // @author       bxu
 // @run-at       document-end
@@ -28,12 +28,13 @@
         app: kintone.app.getId(),
         lang: 'user',
       }
-      
       async function getFields() {
         const res = await kintone.api(kintone.api.url('/k/v1/app/form/fields.json', true), 'GET', params)
         return res
       }
-      
+      function insertAfter(newNode, referenceNode) {
+          referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+      }
       async function mainWork() {
         const objFields = await getFields()
         const eleCommonLabels = document.querySelectorAll('.control-label-gaia, .group-label-gaia')
@@ -51,16 +52,15 @@
                         eleFieldCode.appendChild(textnodeFieldCodeContent)
                     }
                 })
-                eleCommonLabels[i].appendChild(eleFieldCode)
+                insertAfter(eleFieldCode,eleCommonLabels[i])
             }
             eleCommonLabels[i].onmouseout = () => {
-                if (eleCommonLabels[i].childNodes.length > 1) {
-                    eleCommonLabels[i].childNodes[1].remove()
-                }
+                if (eleCommonLabels[i].nextSibling)
+                    eleCommonLabels[i].nextSibling.remove()
             }
             eleCommonLabels[i].onclick = async () => {
-                if (eleCommonLabels[i].childNodes.length > 1) {
-                    await navigator.clipboard.writeText(eleCommonLabels[i].childNodes[1].innerText)
+                if (eleCommonLabels[i].nextSibling) {
+                    await navigator.clipboard.writeText(eleCommonLabels[i].nextSibling.innerText)
                     Swal.fire({
                         title: 'copied',
                         toast: true,
