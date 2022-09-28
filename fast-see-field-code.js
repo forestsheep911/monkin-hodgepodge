@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         快速查看kintone字段代码
 // @namespace    https://github.com/forestsheep911/monkin-hodgepodge/blob/main/fast-see-field-code.js
-// @version      0.5.1
-// @description  如果想查看字段code，以前一定要去后台管理界面，只是简单的看一个要点很多次很不友好，现在只要把鼠标放到元素题目上就可以看了。鼠标不动，单击就是拷贝code。如果有同名标题，只能显示多个code了。暂时不支持subtable。
+// @version      0.6
+// @description  如果想查看字段code，以前一定要去后台管理界面，只是简单的看一个要点很多次很不友好，现在只要把鼠标放到元素题目上就可以看了。鼠标不动，单击就是拷贝code。暂时不支持subtable。
 // @author       bxu
 // @run-at       document-end
 // @match        https://*.cybozu.cn/k/*/show*
@@ -41,37 +41,37 @@
         for (let i = 0; i < eleCommonLabels.length; i += 1) {
             eleCommonLabels[i].style.cursor = 'copy'
             eleCommonLabels[i].onmouseover = () => {
-                const eleFieldCode = document.createElement('span')
-                eleFieldCode.style.marginLeft = '20px'
+                let showCode
                 Object.keys(objFields.properties).forEach((key) => {
                     if (eleCommonLabels[i].innerText === objFields.properties[key].label) {
-                        const textnodeFieldCodeContent = document.createElement('span')
-                        textnodeFieldCodeContent.innerText = objFields.properties[key].code
-                        textnodeFieldCodeContent.style.marginLeft = '20px'
-                        textnodeFieldCodeContent.style.color = '#e35db6'
-                        eleFieldCode.appendChild(textnodeFieldCodeContent)
+                        showCode = objFields.properties[key].code
+                        eleCommonLabels[i].kcode = showCode
                     }
                 })
-                insertAfter(eleFieldCode,eleCommonLabels[i])
-            }
-            eleCommonLabels[i].onmouseout = () => {
-                if (eleCommonLabels[i].nextSibling)
-                    eleCommonLabels[i].nextSibling.remove()
-            }
-            eleCommonLabels[i].onclick = async () => {
-                if (eleCommonLabels[i].nextSibling) {
-                    await navigator.clipboard.writeText(eleCommonLabels[i].nextSibling.innerText)
-                    Swal.fire({
-                        title: 'copied',
+                Swal.fire({
+                        title: showCode,
                         toast: true,
                         position: 'bottom',
                         showConfirmButton: false,
-                        width: 120,
+                        width: 520,
+                        hight: 60,
+                        padding: `0em`,
+                        timer: 700
+                    })
+            }
+            eleCommonLabels[i].onclick = async () => {
+                    await navigator.clipboard.writeText(eleCommonLabels[i].kcode)
+                    Swal.fire({
+                        title: `已拷贝至剪切板`,
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        width: 240,
                         hight: 60,
                         padding: `0em`,
                         timer: 3000,
                     })
-                }
+                // }
             }
         }
     }
